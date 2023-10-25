@@ -7,6 +7,9 @@ import mongoose from 'mongoose';
 // Importe as rotas da API
 import planetRouter from './routes/planetRouter';
 import inventoryRouter from './routes/inventoryRouter';
+import miningRouter from './routes/miningRouter';
+import tradeRouter from './routes/tradeRouter';
+import upgradesRouter from './routes/upgradesRouter';
 
 // Configure o Express
 const app: Express = express();
@@ -25,6 +28,9 @@ app.use(express.json());
 // Configure as rotas da API
 app.use('/api/inventory', inventoryRouter);
 app.use('/api/planets', planetRouter);
+app.use('/api/mining', miningRouter);
+app.use('/api/trade', tradeRouter);
+app.use('/api/upgrades', upgradesRouter);
 
 // Rota de exemplo
 app.get('/', (req: Request, res: Response) => {
