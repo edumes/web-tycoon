@@ -5,8 +5,8 @@ import socketIO, { Server as SocketIOServer } from 'socket.io';
 import mongoose from 'mongoose';
 
 // Importe as rotas da API
-import colonyRoutes from './routes/colonyRoutes';
-import spaceshipRoutes from './routes/spaceshipRoutes';
+import planetRouter from './routes/planetRouter';
+import inventoryRouter from './routes/inventoryRouter';
 
 // Configure o Express
 const app: Express = express();
@@ -23,8 +23,8 @@ mongoose.connect(dbURI);
 app.use(express.json());
 
 // Configure as rotas da API
-app.use('/api/colonies', colonyRoutes);
-app.use('/api/spaceships', spaceshipRoutes);
+app.use('/api/inventory', inventoryRouter);
+app.use('/api/planets', planetRouter);
 
 // Rota de exemplo
 app.get('/', (req: Request, res: Response) => {
