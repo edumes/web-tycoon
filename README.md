@@ -1,6 +1,6 @@
-# Tycoon Espacial Intergaláctico
+# StarMine: The Cosmic Tycoon
 
-Bem-vindo ao Tycoon Espacial Intergaláctico! Este é um jogo de gerenciamento onde você assume o papel de um magnata espacial que busca construir um império minerando minérios em vários planetas.
+Bem-vindo ao StarMine! Este é um jogo de gerenciamento onde você assume o papel de um magnata espacial que busca construir um império minerando minérios em vários planetas.
 
 ## Como Jogar
 

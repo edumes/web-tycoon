@@ -3,7 +3,7 @@ import { Sidebar } from "./sidebar.styles";
 import { Avatar, Tooltip } from "@nextui-org/react";
 import { CompaniesDropdown } from "./companies-dropdown";
 import { HomeIcon } from "../icons/sidebar/home-icon";
-import { PaymentsIcon } from "../icons/sidebar/payments-icon";
+import { PlanetIcon } from "../icons/sidebar/planet-icon";
 import { BalanceIcon } from "../icons/sidebar/balance-icon";
 import { AccountsIcon } from "../icons/sidebar/accounts-icon";
 import { CustomersIcon } from "../icons/sidebar/customers-icon";
@@ -40,60 +40,37 @@ export const SidebarWrapper = () => {
         <div className="flex flex-col justify-between h-full">
           <div className={Sidebar.Body()}>
             <SidebarItem
-              title="Home"
+              title="Mining"
               icon={<HomeIcon />}
               isActive={router.pathname === "/"}
               href="/"
             />
-            <SidebarMenu title="Main Menu">
+            <SidebarMenu title="Menu">
               <SidebarItem
                 isActive={router.pathname === "/accounts"}
-                title="Accounts"
+                title="Intergalatic Shop"
                 icon={<AccountsIcon />}
                 href="accounts"
               />
               <SidebarItem
                 isActive={router.pathname === "/payments"}
-                title="Payments"
-                icon={<PaymentsIcon />}
+                title="Planets"
+                icon={<PlanetIcon />}
               />
-              <CollapseItems
+              {/* <CollapseItems
                 icon={<BalanceIcon />}
                 items={["Banks Accounts", "Credit Cards", "Loans"]}
                 title="Balances"
-              />
+              /> */}
               <SidebarItem
                 isActive={router.pathname === "/customers"}
-                title="Customers"
+                title="Inventory"
                 icon={<CustomersIcon />}
               />
               <SidebarItem
                 isActive={router.pathname === "/products"}
-                title="Products"
+                title="Ores"
                 icon={<ProductsIcon />}
-              />
-              <SidebarItem
-                isActive={router.pathname === "/reports"}
-                title="Reports"
-                icon={<ReportsIcon />}
-              />
-            </SidebarMenu>
-
-            <SidebarMenu title="General">
-              <SidebarItem
-                isActive={router.pathname === "/developers"}
-                title="Developers"
-                icon={<DevIcon />}
-              />
-              <SidebarItem
-                isActive={router.pathname === "/view"}
-                title="View Test Data"
-                icon={<ViewIcon />}
-              />
-              <SidebarItem
-                isActive={router.pathname === "/settings"}
-                title="Settings"
-                icon={<SettingsIcon />}
               />
             </SidebarMenu>
 
