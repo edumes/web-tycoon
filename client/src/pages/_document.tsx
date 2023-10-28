@@ -27,7 +27,7 @@ class MyDocument extends Document {
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
-        <title>Web Tycoon</title>
+        <title>StarMine: The Cosmic Tycoon</title>
         <Head />
         <body>
           <Main />
