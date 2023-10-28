@@ -4,9 +4,9 @@
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "start": "node dist/app.js",
-    "dev": "npx ts-node-dev --respawn --transpile-only src/app.ts",
-    "compile": "npx tsc"
+    "start": "nodemon --exec node dist/app.js",
+    "dev": "nodemon --exec npx ts-node-dev --respawn --transpile-only src/app.ts",
+    "compile": "nodemon --exec npx tsc"
   },
   "author": "edumes",
   "license": "ISC",
