@@ -1,24 +1,19 @@
 import React from "react";
 import { Sidebar } from "./sidebar.styles";
-import { Avatar, Tooltip } from "@nextui-org/react";
-import { CompaniesDropdown } from "./companies-dropdown";
+import { Avatar, Tooltip, Image, AvatarIcon } from "@nextui-org/react";
 import { HomeIcon } from "../icons/sidebar/home-icon";
 import { PlanetIcon } from "../icons/sidebar/planet-icon";
-import { BalanceIcon } from "../icons/sidebar/balance-icon";
 import { AccountsIcon } from "../icons/sidebar/accounts-icon";
-import { CustomersIcon } from "../icons/sidebar/customers-icon";
 import { ProductsIcon } from "../icons/sidebar/products-icon";
-import { ReportsIcon } from "../icons/sidebar/reports-icon";
-import { DevIcon } from "../icons/sidebar/dev-icon";
-import { ViewIcon } from "../icons/sidebar/view-icon";
 import { SettingsIcon } from "../icons/sidebar/settings-icon";
-import { CollapseItems } from "./collapse-items";
 import { SidebarItem } from "./sidebar-item";
 import { SidebarMenu } from "./sidebar-menu";
 import { FilterIcon } from "../icons/sidebar/filter-icon";
 import { useSidebarContext } from "../layout/layout-context";
 import { ChangeLogIcon } from "../icons/sidebar/changelog-icon";
 import { useRouter } from "next/router";
+import { InventoryIcon } from "../icons/sidebar/inventory-icon";
+import { RocketIcon } from "../icons/sidebar/rocket-icon";
 
 export const SidebarWrapper = () => {
   const router = useRouter();
@@ -35,13 +30,20 @@ export const SidebarWrapper = () => {
         })}
       >
         <div className={Sidebar.Header()}>
-          <CompaniesDropdown />
+          <Image
+            isBlurred
+            isZoomed
+            // width={240}
+            src={'https://i.imgur.com/sl8yi6n.png'}
+            alt="NextUI Album Cover"
+          // className="m-1"
+          />
         </div>
         <div className="flex flex-col justify-between h-full">
           <div className={Sidebar.Body()}>
             <SidebarItem
-              title="Mining"
-              icon={<HomeIcon />}
+              title="Planets"
+              icon={<PlanetIcon />}
               isActive={router.pathname === "/"}
               href="/"
             />
@@ -54,8 +56,8 @@ export const SidebarWrapper = () => {
               />
               <SidebarItem
                 isActive={router.pathname === "/payments"}
-                title="Planets"
-                icon={<PlanetIcon />}
+                title="Mining"
+                icon={<RocketIcon />}
               />
               {/* <CollapseItems
                 icon={<BalanceIcon />}
@@ -65,7 +67,7 @@ export const SidebarWrapper = () => {
               <SidebarItem
                 isActive={router.pathname === "/customers"}
                 title="Inventory"
-                icon={<CustomersIcon />}
+                icon={<InventoryIcon />}
               />
               <SidebarItem
                 isActive={router.pathname === "/products"}
@@ -95,8 +97,12 @@ export const SidebarWrapper = () => {
             </Tooltip>
             <Tooltip content={"Profile"} color="primary">
               <Avatar
-                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                icon={<AvatarIcon />}
                 size="sm"
+                classNames={{
+                  base: "bg-gradient-to-br from-[#f8b559] to-[#8a4b00]",
+                  icon: "text-black/80",
+                }}
               />
             </Tooltip>
           </div>

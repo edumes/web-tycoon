@@ -3,6 +3,7 @@ import express, { Express, Request, Response } from 'express';
 import http from 'http';
 import socketIO, { Server as SocketIOServer } from 'socket.io';
 import mongoose from 'mongoose';
+import cors from 'cors'; // Importe o pacote cors
 
 // Importe as rotas da API
 import planetRouter from './routes/planetRouter';
@@ -19,11 +20,14 @@ const server: http.Server = http.createServer(app);
 const io: SocketIOServer = new socketIO.Server(server);
 
 // Conexão com o MongoDB
-const dbURI: string = 'mongodb://localhost:27017/tycoonGame'; // Substitua pelo URI do seu banco de dados
+const dbURI: string = 'mongodb+srv://starmine-backend:90124478@cluster0.cjgzc41.mongodb.net/tycoonGame?retryWrites=true&w=majority'; // Substitua pelo URI do seu banco de dados
 mongoose.connect(dbURI);
 
 // Middleware para analisar JSON
 app.use(express.json());
+
+// Adicione o middleware cors aqui, permitindo todas as origens (não recomendado para produção)
+app.use(cors());
 
 // Configure as rotas da API
 app.use('/api/inventory', inventoryRouter);
@@ -45,7 +49,7 @@ io.on('connection', (socket) => {
 });
 
 // Porta em que o servidor irá ouvir
-const port: number = 3000; // Substitua pela porta desejada
+const port: number = 3333; // Substitua pela porta desejada
 
 // Inicie o servidor
 server.listen(port, () => {

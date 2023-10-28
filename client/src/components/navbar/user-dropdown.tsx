@@ -1,5 +1,6 @@
 import {
   Avatar,
+  AvatarIcon,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -16,10 +17,11 @@ export const UserDropdown = () => {
       <NavbarItem>
         <DropdownTrigger>
           <Avatar
-            as="button"
-            color="secondary"
-            size="md"
-            src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+            icon={<AvatarIcon />}
+            classNames={{
+              base: "bg-gradient-to-br from-[#f8b559] to-[#8a4b00]",
+              icon: "text-black/80",
+            }}
           />
         </DropdownTrigger>
       </NavbarItem>
@@ -31,21 +33,16 @@ export const UserDropdown = () => {
           key="profile"
           className="flex flex-col justify-start w-full items-start"
         >
-          <p>Signed in as</p>
-          <p>zoey@example.com</p>
+          <p>Signed in as StarMiner</p>
         </DropdownItem>
         <DropdownItem key="settings">My Settings</DropdownItem>
-        <DropdownItem key="team_settings">Team Settings</DropdownItem>
-        <DropdownItem key="analytics">Analytics</DropdownItem>
-        <DropdownItem key="system">System</DropdownItem>
-        <DropdownItem key="configurations">Configurations</DropdownItem>
         <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
         <DropdownItem key="logout" color="danger" className="text-danger ">
           Log Out
         </DropdownItem>
-        <DropdownItem key="switch">
+        {/* <DropdownItem key="switch">
           <DarkModeSwitch />
-        </DropdownItem>
+        </DropdownItem> */}
       </DropdownMenu>
     </Dropdown>
   );
