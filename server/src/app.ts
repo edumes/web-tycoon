@@ -48,9 +48,9 @@ io.on('connection', (socket) => {
 });
 
 // Porta em que o servidor irá ouvir
-const port: number = 3333; // Substitua pela porta desejada
+const PORT = process.env.PORT || 3333; // Substitua pela porta desejada
 
 // Inicie o servidor
-server.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
+server.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
