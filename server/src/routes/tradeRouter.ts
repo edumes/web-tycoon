@@ -6,7 +6,7 @@ const tradeRouter = Router();
 // Rota para vender minérios
 tradeRouter.post('/sell', async (req, res) => {
     try {
-        const userId = req.user.id; // Você deve ter um sistema de autenticação para obter o ID do jogador
+        const userId = req.body.id; // Você deve ter um sistema de autenticação para obter o ID do jogador
         const { itemsToSell } = req.body; // Receba os minérios que o jogador deseja vender
 
         const userInventory = await UserInventoryModel.findOne({ userId });

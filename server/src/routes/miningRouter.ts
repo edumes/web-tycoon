@@ -7,7 +7,7 @@ const miningRouter = Router();
 miningRouter.post('/mine/:planetId', async (req, res) => {
     try {
         const { planetId } = req.params;
-        const userId = req.user.id; // Você deve ter um sistema de autenticação para obter o ID do jogador
+        const userId = req.body.id; // Você deve ter um sistema de autenticação para obter o ID do jogador
 
         // Verifique se o jogador possui permissão para minerar neste planeta
         // Isso pode incluir verificações de distância, tecnologia, etc.

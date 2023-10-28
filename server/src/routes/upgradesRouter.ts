@@ -29,10 +29,10 @@ const upgrades = [
 // Rota para comprar melhorias
 upgradesRouter.post('/buy/:upgradeId', async (req, res) => {
     try {
-        const userId = req.user.id; // Você deve ter um sistema de autenticação para obter o ID do jogador
+        const userId = req.body.id; // Você deve ter um sistema de autenticação para obter o ID do jogador
         const { upgradeId } = req.params;
 
-        const selectedUpgrade = upgrades.find((upgrade) => upgradeId === upgrade.name);
+        const selectedUpgrade = upgrades.find((upgrade: any) => upgradeId === upgrade.name);
 
         if (!selectedUpgrade) {
             return res.status(400).json({ error: 'Melhoria não encontrada.' });
