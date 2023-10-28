@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "npx ts-node src/app.ts",
     "dev": "nodemon --exec npx ts-node-dev --respawn --transpile-only src/app.ts",
     "compile": "npx tsc"
   },
