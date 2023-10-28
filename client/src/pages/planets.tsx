@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 const Planets: NextPage = () => {
   const [planets, setPlanets] = useState<any>([]);
 
-  const apiUrl = process.env.API_URL;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => {
     fetch(`${apiUrl}/api/planets`)
       .then((response) => response.json())

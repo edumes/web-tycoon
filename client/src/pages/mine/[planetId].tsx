@@ -6,7 +6,7 @@ import { DotsIcon } from "../../components/icons/accounts/dots-icon";
 
 const PlanetMining: NextPage = () => {
     const router = useRouter();
-    const apiUrl = process.env.API_URL;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const { planetId } = router.query;
 
     const [planetDetails, setPlanetDetails] = useState<any>(null);
