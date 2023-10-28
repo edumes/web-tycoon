@@ -32,7 +32,7 @@ app.use(cors());
 // Configure as rotas da API
 app.use('/api/inventory', inventoryRouter);
 app.use('/api/planets', planetRouter);
-app.use('/api/mining', miningRouter);
+app.use('/api/mine', miningRouter);
 app.use('/api/trade', tradeRouter);
 app.use('/api/upgrades', upgradesRouter);
 app.use('/api/users', userRouter);

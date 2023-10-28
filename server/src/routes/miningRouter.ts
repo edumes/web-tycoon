@@ -1,40 +1,60 @@
 import { Router } from 'express';
 import UserInventoryModel from '../models/UserInventoryModel';
+import PlanetModel from '../models/PlanetModel';
 
 const miningRouter = Router();
 
 // Rota para a mineração em um planeta
-miningRouter.post('/mine/:planetId', async (req, res) => {
+miningRouter.post('/:planetId/:resourceId', async (req, res) => {
     try {
-        const { planetId } = req.params;
-        const userId = req.body.id; // Você deve ter um sistema de autenticação para obter o ID do jogador
+        const { planetId, resourceId } = req.params;
+        const userId = "653d8d461e5673cdb46001ce"; // req.body.id;
 
-        // Verifique se o jogador possui permissão para minerar neste planeta
-        // Isso pode incluir verificações de distância, tecnologia, etc.
-
-        // Simule a mineração - você pode personalizar esta parte
-        const minedResources = simulateMining(planetId);
+        // Simule a mineração com base no planeta e no recurso
+        const minedResources = simulateMining(planetId, resourceId);
 
         // Atualize o inventário do jogador com os minérios minerados
         await updateInventory(userId, minedResources);
 
         res.json({ success: true, minedResources });
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(500).json({ error: 'Erro ao minerar minérios.' });
     }
 });
 
-// Função de simulação de mineração
-function simulateMining(planetId: string) {
-    // Aqui você pode implementar a lógica real de mineração, que pode depender do planeta e da tecnologia do jogador.
-    // Por enquanto, vou simular uma mineração simples com valores aleatórios.
-    const minedResources = [
-        { itemId: 'item1', quantity: getRandomQuantity() },
-        { itemId: 'item2', quantity: getRandomQuantity() },
-        // Adicione mais minérios, se necessário
+// Função para obter informações sobre um planeta e seu recurso
+async function getPlanetResourceInfo(planetId: string, resourceId: string) {
+    const planet: any = await PlanetModel.findById(planetId);
+    
+    if (!planet) {
+        throw new Error('Planeta não encontrado.');
+    }
+    
+    const resource = planet.resources.find((res) => res._id.toString() === resourceId);
+
+    if (!resource) {
+        throw new Error('Recurso não encontrado no planeta.');
+    }
+
+    return {
+        resourceName: resource.name,
+        resourceValue: resource.value,
+    };
+}
+
+function simulateMining(planetId: string, resourceId: string) {
+    const planetResourceInfo = getPlanetResourceInfo(planetId, resourceId);
+
+    // Implemente sua lógica de mineração com base nas informações do planeta e do recurso
+    const minedQuantity = getRandomQuantity(); // Você pode personalizar isso
+
+    return [
+        {
+            itemId: resourceId,
+            quantity: minedQuantity,
+        },
     ];
-    return minedResources;
 }
 
 // Função para obter uma quantidade aleatória de minérios (para simulação)
@@ -45,6 +65,7 @@ function getRandomQuantity() {
 // Função para atualizar o inventário do jogador com os minérios minerados
 async function updateInventory(userId: string, minedResources: { itemId: string; quantity: number }[]) {
     const userInventory = await UserInventoryModel.findOne({ userId });
+    console.log("debug", userId);
 
     if (!userInventory) {
         throw new Error('Inventário do jogador não encontrado.');

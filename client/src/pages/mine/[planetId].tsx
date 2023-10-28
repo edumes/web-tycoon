@@ -90,7 +90,7 @@ const PlanetMining: NextPage = () => {
     }, [planetId]);
 
     return (
-        <div className="h-full p-16">
+        <div className="h-full p-4">
             {loading ? (
                 <>
                     <Skeleton className="w-16 h-6 mb-4 rounded-lg" />
@@ -113,7 +113,15 @@ const PlanetMining: NextPage = () => {
                                     indicator={<DotsIcon />}
                                     title={resource.name}
                                 >
-                                    {/* <p> */}
+                                    <Button
+                                        color="warning"
+                                        variant="ghost"
+                                        className="px-4 py-2 mb-4 rounded-md ml-1"
+                                        onClick={() => mineResource(resource)}
+                                    >
+                                        Iniciar Mineração
+                                    </Button>
+                                    <br />
                                     <Chip
                                         variant="shadow"
                                         classNames={{
@@ -123,23 +131,13 @@ const PlanetMining: NextPage = () => {
                                     >
                                         $ {resource.value}
                                     </Chip> por unidade
-                                    {/* </p> */}
 
-                                    <Button
-                                        color="primary"
-                                        variant="ghost"
-                                        className="px-4 py-2 mt-4 rounded-md ml-1"
-                                        onClick={() => mineResource(resource)}
-                                    >
-                                        Iniciar Mineração
-                                    </Button>
                                     <Progress
                                         aria-label="Mining..."
-                                        isStriped
                                         size="lg"
                                         value={progress} // Use o valor de progresso
                                         color="warning"
-                                        className="max-w mt-2 mb-2"
+                                        className="max-w mt-4 mb-2"
                                     />
                                 </AccordionItem>
                             ))}
