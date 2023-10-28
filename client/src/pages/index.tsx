@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"; // Importe useState e useEffect
 const Home: NextPage = () => {
   const [planets, setPlanets] = useState<any>([]); // Estado para armazenar os planetas
 
-  const apiUrl = process.env.VERCEL_URL;
+  const apiUrl = process.env.API_URL;
   useEffect(() => {
     // Faça a solicitação GET para a rota de planetas e atualize o estado com os dados recebidos
     fetch(`${apiUrl}/api/planets`)
