@@ -2,7 +2,7 @@
 import express, { Express, Request, Response } from 'express';
 import http from 'http';
 import socketIO, { Server as SocketIOServer } from 'socket.io';
-import mongoose from 'mongoose';
+import { connectToMongo } from './config/mongo';
 import cors from 'cors'; // Importe o pacote cors
 
 // Importe as rotas da API
@@ -20,8 +20,7 @@ const server: http.Server = http.createServer(app);
 const io: SocketIOServer = new socketIO.Server(server);
 
 // Conexão com o MongoDB
-const dbURI: string = 'mongodb+srv://starmine-backend:90124478@cluster0.cjgzc41.mongodb.net/tycoonGame?retryWrites=true&w=majority'; // Substitua pelo URI do seu banco de dados
-mongoose.connect(dbURI);
+connectToMongo();
 
 // Middleware para analisar JSON
 app.use(express.json());

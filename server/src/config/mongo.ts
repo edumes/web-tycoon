@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const dbURI: string = 'mongodb://localhost:27017/tycoonGame'; // Substitua pelo URI do seu banco de dados
+const dbURI: string = 'mongodb+srv://starmine-backend:90124478@cluster0.cjgzc41.mongodb.net/tycoonGame?retryWrites=true&w=majority';
 
 const connectToMongo = async (): Promise<void> => {
     try {
