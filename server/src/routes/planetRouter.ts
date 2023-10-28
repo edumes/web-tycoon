@@ -16,8 +16,8 @@ planetRouter.get('/', async (req, res) => {
 // Rota para criar um novo planeta
 planetRouter.post('/', async (req, res) => {
     try {
-        const { name, resources } = req.body;
-        const newPlanet = new PlanetModel({ name, resources });
+        const { name, img_url, resources } = req.body;
+        const newPlanet = new PlanetModel({ name, img_url, resources });
         await newPlanet.save();
         res.json(newPlanet);
     } catch (error) {

@@ -3,6 +3,8 @@ import type { AppProps } from "next/app";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { NextUIProvider } from "@nextui-org/react";
 import { Layout } from "../components/layout/layout";
+import dotenv from "dotenv";
+dotenv.config();
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

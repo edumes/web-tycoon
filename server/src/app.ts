@@ -11,6 +11,7 @@ import inventoryRouter from './routes/inventoryRouter';
 import miningRouter from './routes/miningRouter';
 import tradeRouter from './routes/tradeRouter';
 import upgradesRouter from './routes/upgradesRouter';
+import userRouter from './routes/UserRouter';
 
 // Configure o Express
 const app: Express = express();
@@ -34,6 +35,7 @@ app.use('/api/planets', planetRouter);
 app.use('/api/mining', miningRouter);
 app.use('/api/trade', tradeRouter);
 app.use('/api/upgrades', upgradesRouter);
+app.use('/api/users', userRouter);
 
 // Rota de exemplo
 app.get('/', (req: Request, res: Response) => {

@@ -44,8 +44,8 @@ export const SidebarWrapper = () => {
             <SidebarItem
               title="Planets"
               icon={<PlanetIcon />}
-              isActive={router.pathname === "/"}
-              href="/"
+              isActive={router.pathname === "/planets"}
+              href="/planets"
             />
             <SidebarMenu title="Menu">
               <SidebarItem

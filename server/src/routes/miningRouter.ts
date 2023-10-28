@@ -20,6 +20,7 @@ miningRouter.post('/mine/:planetId', async (req, res) => {
 
         res.json({ success: true, minedResources });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: 'Erro ao minerar minérios.' });
     }
 });
