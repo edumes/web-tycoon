@@ -121,7 +121,7 @@ const PlanetMining: NextPage = () => {
                                             content: "drop-shadow shadow-black text-white",
                                         }}
                                     >
-                                        {resource.value}
+                                        $ {resource.value}
                                     </Chip> por unidade
                                     {/* </p> */}
 

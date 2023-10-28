@@ -1,6 +1,6 @@
 import Link from "next/link"; // Importe o Link do Next.js
 import type { NextPage } from "next";
-import { Button, Image } from "@nextui-org/react";
+import { Button, Chip, Image } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 
 const Planets: NextPage = () => {
@@ -36,7 +36,17 @@ const Planets: NextPage = () => {
                 <ul>
                   {planet.resources.map((resource: any, resourceIndex: any) => (
                     <li key={resourceIndex}>
-                      {resource.name} ({resource.value} por unidade)
+                      {resource.name} (<Chip
+                        size="sm"
+                        variant="shadow"
+                        radius="sm"
+                        classNames={{
+                          base: "bg-gradient-to-br from-green-500 to-green-900 border-small border-white/50 shadow-green-500/30",
+                          content: "drop-shadow shadow-black text-white",
+                        }}
+                      >
+                        $ {resource.value}
+                      </Chip> por unidade)
                     </li>
                   ))}
                 </ul>
