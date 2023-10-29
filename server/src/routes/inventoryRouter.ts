@@ -3,21 +3,37 @@ import UserInventoryModel from '../models/UserInventoryModel';
 
 const inventoryRouter = Router();
 
-// Rota para adicionar um item ao inventário do usuário
-inventoryRouter.post('/add', async (req, res) => {
+// Rota para buscar o inventário do usuário por userId
+inventoryRouter.get('/:userId', async (req, res) => {
     try {
-        const { userId, itemId, quantity } = req.body;
+        const { userId } = req.params;
         const userInventory = await UserInventoryModel.findOne({ userId });
 
         if (!userInventory) {
             return res.status(404).json({ error: 'Inventário do usuário não encontrado.' });
         }
 
-        const existingItem = userInventory.items.find((item) => item.itemId === itemId);
+        res.json(userInventory);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar inventário do usuário.' });
+    }
+});
+
+// Rota para adicionar um item ao inventário do usuário
+inventoryRouter.post('/add', async (req, res) => {
+    try {
+        const { userId, itemId, resourceName, img_url, quantity } = req.body;
+        const userInventory = await UserInventoryModel.findOne({ userId });
+
+        if (!userInventory) {
+            return res.status(404).json({ error: 'Inventário do usuário não encontrado.' });
+        }
+
+        const existingItem = userInventory.items.find((item) => item.itemId.toString() === itemId);
         if (existingItem) {
             existingItem.quantity += quantity;
         } else {
-            userInventory.items.push({ itemId, quantity });
+            userInventory.items.push({ itemId, resourceName, img_url, quantity });
         }
 
         await userInventory.save();
@@ -37,7 +53,7 @@ inventoryRouter.post('/remove', async (req, res) => {
             return res.status(404).json({ error: 'Inventário do usuário não encontrado.' });
         }
 
-        const existingItem = userInventory.items.find((item) => item.itemId === itemId);
+        const existingItem = userInventory.items.find((item) => item.itemId.toString() === itemId);
         if (existingItem) {
             existingItem.quantity -= quantity;
             if (existingItem.quantity <= 0) {

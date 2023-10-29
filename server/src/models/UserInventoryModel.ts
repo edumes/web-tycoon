@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 interface IUserInventory extends Document {
     userId: string;
-    items: Array<{ itemId: string; quantity: number }>;
+    items: Array<{ itemId: string; resourceName: string; quantity: number, img_url: string }>;
 }
 
 const UserInventorySchema: Schema = new Schema({
@@ -10,7 +10,9 @@ const UserInventorySchema: Schema = new Schema({
     items: [
         {
             itemId: { type: mongoose.Schema.Types.ObjectId, required: true },
+            resourceName: String,
             quantity: { type: Number, required: true, default: 0 },
+            img_url: String
         },
     ],
 });

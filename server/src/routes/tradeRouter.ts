@@ -18,7 +18,7 @@ tradeRouter.post('/sell', async (req, res) => {
         // Verifique se o jogador possui os minérios que deseja vender e se a quantidade é válida
 
         for (const { itemId, quantity } of itemsToSell) {
-            const existingItem = userInventory.items.find((item) => item.itemId === itemId);
+            const existingItem = userInventory.items.find((item) => item.itemId.toString() === itemId);
 
             if (!existingItem || existingItem.quantity < quantity) {
                 return res.status(400).json({ error: 'Minérios insuficientes para venda.' });

@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 interface Resource {
     name: string;
     value: number;
+    img_url: string;
 }
 
 interface Planet extends Document {
@@ -13,7 +14,7 @@ interface Planet extends Document {
 
 const planetSchema = new Schema<Planet>({
     name: String,
-    resources: [{ name: String, value: Number }],
+    resources: [{ name: String, value: Number, img_url: String }],
     img_url: String
 });
 

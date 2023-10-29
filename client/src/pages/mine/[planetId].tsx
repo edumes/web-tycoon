@@ -1,8 +1,9 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { Button, Accordion, AccordionItem, Skeleton, Progress, Chip } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { DotsIcon } from "../../components/icons/accounts/dots-icon";
+import { PickaxeIcon } from "../../components/icons/pickaxe-icon";
 
 const PlanetMining: NextPage = () => {
     const router = useRouter();
@@ -11,61 +12,66 @@ const PlanetMining: NextPage = () => {
 
     const [planetDetails, setPlanetDetails] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [progress, setProgress] = useState(0);
+    const [miningInProgress, setMiningInProgress] = useState(false);
 
-    const mineResource = async (resource: any) => {
-        if (planetId) {
-            // Defina uma taxa de preenchimento mais variável
-            let progress = 0;
-            const updateProgress = () => {
-                if (progress < 100) {
-                    // Gere um incremento de preenchimento variável entre 5 e 20
-                    const increment = Math.random() * 15 + 5;
-                    progress += increment;
+    const progressRef = useRef(progress); // Utilize uma referência para manter o valor de progress
 
-                    // Limitar o progresso a 100
-                    if (progress > 100) {
-                        progress = 100;
-                    }
-
-                    setProgress(progress);
-
-                    // Se o progresso não estiver completo, continue a atualização
-                    if (progress < 100) {
-                        // Defina o próximo intervalo de atualização entre 300 e 1000 milissegundos (0,3 - 1 segundo)
-                        const nextUpdateDelay = Math.random() * 700 + 300;
-                        setTimeout(updateProgress, nextUpdateDelay);
-                    } else {
-                        // Quando o progresso estiver completo, finalize a mineração
-                        completeMining();
-                    }
-                }
-            };
-
-            // Inicie a atualização do progresso
-            updateProgress();
+    const startMining = (resourceId: string) => {
+        if (!miningInProgress) {
+            setMiningInProgress(true);
+            mineResource(resourceId);
         }
     };
 
-    const completeMining = () => {
-        // Simule a resposta do servidor após a mineração
-        fetch(`${apiUrl}/api/mining/mine/${planetId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ id: "653d4ca0bb3b87f5e4497f33" }), // Substitua pelo ID do jogador autenticado
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                // Atualize os detalhes do planeta após a mineração
-                setPlanetDetails(data.planetDetails);
-            })
-            .catch((error) => {
-                console.error("Erro ao minerar:", error);
-            });
+    const mineResource = (resourceId: string) => {
+        if (miningInProgress) {
+            return;
+        }
+
+        setMiningInProgress(true);
+        mineResourceInternal(resourceId);
     };
 
-    const [progress, setProgress] = useState(0);
+    const mineResourceInternal = (resourceId: string) => {
+        const updateProgress = () => {
+            const increment = Math.random() * 15 + 5;
+            const newProgress = progressRef.current + increment; // Use o valor da referência
+            if (newProgress >= 100) {
+                // Se atingir 100%, finalize a mineração
+                finalizeMining(resourceId);
+            } else {
+                progressRef.current = newProgress; // Atualize o valor da referência
+                setProgress(newProgress); // Atualize o estado para re-renderizar o componente
+                const nextUpdateDelay = Math.random() * 700 + 300;
+                setTimeout(updateProgress, nextUpdateDelay);
+            }
+        };
+
+        const finalizeMining = (resourceId: string) => {
+            // Quando o progresso estiver completo, finalize a mineração
+            fetch(`${apiUrl}/api/mine/${planetId}/${resourceId}`, {
+                method: "POST",
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // setPlanetDetails(data.planetDetails);
+                    progressRef.current = 0; // Redefina o valor da referência para 0
+                    setProgress(0); // Redefina o estado para 0
+                    setMiningInProgress(false);
+                })
+                .catch((error) => {
+                    console.error("Erro ao minerar:", error);
+                });
+        };
+
+        updateProgress();
+    };
+
+    // Use useEffect para observar mudanças no progresso
+    useEffect(() => {
+        console.log("progresso", progress);
+    }, [progress]);
 
     useEffect(() => {
         if (planetId) {
@@ -114,10 +120,12 @@ const PlanetMining: NextPage = () => {
                                     title={resource.name}
                                 >
                                     <Button
+                                        isLoading={miningInProgress}
+                                        // endContent={<PickaxeIcon />}
                                         color="warning"
                                         variant="ghost"
                                         className="px-4 py-2 mb-4 rounded-md ml-1"
-                                        onClick={() => mineResource(resource)}
+                                        onClick={() => startMining(resource._id)}
                                     >
                                         Iniciar Mineração
                                     </Button>
@@ -135,7 +143,7 @@ const PlanetMining: NextPage = () => {
                                     <Progress
                                         aria-label="Mining..."
                                         size="lg"
-                                        value={progress} // Use o valor de progresso
+                                        value={progress}
                                         color="warning"
                                         className="max-w mt-4 mb-2"
                                     />
