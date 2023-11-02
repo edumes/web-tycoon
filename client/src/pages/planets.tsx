@@ -26,6 +26,7 @@ const Planets: NextPage = () => {
             >
               <Image
                 isZoomed
+                isBlurred
                 className="w-full h-22 object-cover rounded-md"
                 alt={planet.name}
                 src={planet.img_url}
