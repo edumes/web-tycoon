@@ -1,11 +1,35 @@
 import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+
+declare module 'express' {
+  interface Request {
+    userId: string;
+  }
+}
 
 const authenticateUser = (req: Request, res: Response, next: NextFunction) => {
-    // Implemente a lógica de autenticação aqui
-    // Verifique se o usuário está autenticado e, se não estiver, redirecione ou retorne um erro
-    // Caso o usuário esteja autenticado, você pode adicionar informações do usuário ao objeto `req`
+  const authHeader = req.header('Authorization');
 
-    next(); // Chame `next()` para permitir que a requisição continue após a autenticação
+  if (!authHeader) {
+    return res.status(401).json({ error: 'No token authorization' });
+  }
+
+  const tokenPrefix = 'Bearer ';
+  if (!authHeader.startsWith(tokenPrefix)) {
+    return res.status(401).json({ error: 'Token is not a Bearer' });
+  }
+
+  const token = authHeader.slice(tokenPrefix.length);
+
+  try {
+    const decoded: any = jwt.verify(token, 'web-tycoon');
+
+    req.userId = decoded.userId;
+
+    next();
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid token or expired' });
+  }
 };
 
 export default authenticateUser;

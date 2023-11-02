@@ -1,46 +1,66 @@
 import { Router } from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import UserModel from '../models/UserModel';
 import UserInventoryModel from '../models/UserInventoryModel';
+import authenticateUser from '../middleware/authenticationMiddleware';
 
 const userRouter = Router();
 
-// Rota para criar um novo usuário
-userRouter.post('/create', async (req, res) => {
+userRouter.post('/register', async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, email, password } = req.body;
 
-        // Verifique se o usuário com o mesmo e-mail já existe
         const existingUser = await UserModel.findOne({ username });
 
         if (existingUser) {
-            return res.status(400).json({ error: 'Usuário já registrado.' });
+            return res.status(400).json({ error: 'Nome de usuário já está em uso.' });
         }
 
-        // Crie um novo usuário
-        const newUser = new UserModel({ username, password });
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Crie um inventário vazio para o novo usuário
-        const userInventory = new UserInventoryModel({ userId: newUser._id });
-
-        // Associe o inventário ao usuário
-        newUser.inventoryId = userInventory._id;
-
+        const newUser = new UserModel({ username, email, password: hashedPassword });
         await newUser.save();
-        await userInventory.save();
 
-        res.json({ success: true, user: newUser });
+        const token = jwt.sign({ userId: newUser._id }, 'web-tycoon');
+
+        res.json({ success: true, token });
     } catch (error) {
-        console.log(error)
-        res.status(500).json({ error: 'Erro ao criar o usuário.' });
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao criar a conta.' });
     }
 });
 
-// Rota para obter informações do usuário por ID
-userRouter.get('/info/:userId', async (req, res) => {
+// Rota para fazer login
+userRouter.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await UserModel.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ error: 'Usuário não encontrado.' });
+        }
+
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (!passwordMatch) {
+            return res.status(401).json({ error: 'Senha incorreta.' });
+        }
+
+        const token = jwt.sign({ userId: user._id }, 'web-tycoon');
+
+        res.json({ success: true, token });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao fazer login.' });
+    }
+});
+
+userRouter.get('/details/:userId', authenticateUser, async (req, res) => {
     try {
         const { userId } = req.params;
 
-        // Busque informações do usuário por ID
         const user = await UserModel.findById(userId);
 
         if (!user) {

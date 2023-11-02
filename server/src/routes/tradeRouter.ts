@@ -1,13 +1,14 @@
 import { Router } from 'express';
+import authenticateUser from '../middleware/authenticationMiddleware';
 import UserInventoryModel from '../models/UserInventoryModel';
 
 const tradeRouter = Router();
 
-// Rota para vender minérios
-tradeRouter.post('/sell', async (req, res) => {
+// vender minérios
+tradeRouter.post('/sell', authenticateUser, async (req, res) => {
     try {
-        const userId = req.body.id; // Você deve ter um sistema de autenticação para obter o ID do jogador
-        const { itemsToSell } = req.body; // Receba os minérios que o jogador deseja vender
+        const userId = req.body.id;
+        const { itemsToSell } = req.body;
 
         const userInventory = await UserInventoryModel.findOne({ userId });
 
@@ -15,7 +16,7 @@ tradeRouter.post('/sell', async (req, res) => {
             return res.status(404).json({ error: 'Inventário do jogador não encontrado.' });
         }
 
-        // Verifique se o jogador possui os minérios que deseja vender e se a quantidade é válida
+        // Verifique se o jogador possui os minérios que deseja vender e se a quantidade é valida
 
         for (const { itemId, quantity } of itemsToSell) {
             const existingItem = userInventory.items.find((item) => item.itemId.toString() === itemId);
@@ -24,17 +25,14 @@ tradeRouter.post('/sell', async (req, res) => {
                 return res.status(400).json({ error: 'Minérios insuficientes para venda.' });
             }
 
-            // Calcule o valor da venda com base no valor do minério
+            // calcular o valor da venda com base no valor do minerio
             const totalValue = calculateSaleValue(itemId, quantity);
 
-            // Atualize o inventário do jogador e o saldo de dinheiro
             existingItem.quantity -= quantity;
-            // Atualize o saldo do jogador com o valor da venda
-            // Lembre-se de implementar esta lógica no seu jogo
+            // ataulizar o saldo do jogador com o valor da venda
         }
 
         await userInventory.save();
-        // Atualize o saldo do jogador no banco de dados
 
         res.json({ success: true });
     } catch (error) {
@@ -42,11 +40,9 @@ tradeRouter.post('/sell', async (req, res) => {
     }
 });
 
-// Função para calcular o valor da venda com base no valor do minério (para simulação)
+// calcular o valor da venda com base no valor do minério (para simulação)
 function calculateSaleValue(itemId: string, quantity: number) {
-    // Aqui você pode implementar uma lógica real para calcular o valor da venda com base no mercado intergaláctico.
-    // Por enquanto, vou usar um valor fixo para simulação.
-    const fixedValue = 5; // Valor fictício por unidade
+    const fixedValue = 5;
     return fixedValue * quantity;
 }
 

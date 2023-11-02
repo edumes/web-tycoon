@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import authenticateUser from '../middleware/authenticationMiddleware';
 import UserInventoryModel from '../models/UserInventoryModel';
 
 const upgradesRouter = Router();
@@ -27,7 +28,7 @@ const upgrades = [
 ];
 
 // Rota para comprar melhorias
-upgradesRouter.post('/buy/:upgradeId', async (req, res) => {
+upgradesRouter.post('/buy/:upgradeId', authenticateUser, async (req, res) => {
     try {
         const userId = req.body.id; // Você deve ter um sistema de autenticação para obter o ID do jogador
         const { upgradeId } = req.params;

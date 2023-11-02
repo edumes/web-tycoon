@@ -1,23 +1,23 @@
 import { Router } from 'express';
+import authenticateUser from '../middleware/authenticationMiddleware';
 import UserInventoryModel from '../models/UserInventoryModel';
 import PlanetModel from '../models/PlanetModel';
 
 const miningRouter = Router();
 
-miningRouter.post('/:planetId/:resourceId', async (req, res) => { // minerar
+miningRouter.post('/:planetId/:resourceId', authenticateUser, async (req, res) => { // minerar
     try {
         const { planetId, resourceId } = req.params;
         const userId = "653e5b167513aa9933ce90db"; // req.body.id;
 
-        // Obtenha informações sobre o planeta e o recurso a ser minerado
+        // informações sobre o planeta e o recurso a ser minerado
         const { resourceName, img_url } = await getPlanetResourceInfo(planetId, resourceId);
         const randomQuantity = Math.floor(Math.random() * 3) + 1 // entre 1 a 3
         // mineração com base no planeta e no minerio
         const minedResources = [
-            { itemId: resourceId, resourceName: resourceName, quantity: randomQuantity, img_url: img_url }, // Adicione uma unidade do recurso minerado
+            { itemId: resourceId, resourceName: resourceName, quantity: randomQuantity, img_url: img_url }
         ];
 
-        // Atualize o inventário do jogador com os minérios minerados
         await updateInventory(userId, minedResources);
 
         res.json({ success: true, minedResources });
@@ -27,7 +27,7 @@ miningRouter.post('/:planetId/:resourceId', async (req, res) => { // minerar
     }
 });
 
-// Função para obter informações sobre um planeta e seu recurso
+// obter informações sobre um planeta e seu recurso
 async function getPlanetResourceInfo(planetId: string, resourceId: string) {
     const planet: any = await PlanetModel.findById(planetId);
 
@@ -48,7 +48,7 @@ async function getPlanetResourceInfo(planetId: string, resourceId: string) {
     };
 }
 
-// Função para atualizar o inventário do jogador com os minérios minerados
+// atualizar o inventário do jogador com os minérios minerados
 async function updateInventory(userId: string, minedResources: { itemId: string; resourceName: string; quantity: number; img_url: string }[]) {
     const userInventory = await UserInventoryModel.findOne({ userId });
 

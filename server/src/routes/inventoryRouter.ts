@@ -1,10 +1,10 @@
 import { Router } from 'express';
+import authenticateUser from '../middleware/authenticationMiddleware';
 import UserInventoryModel from '../models/UserInventoryModel';
 
 const inventoryRouter = Router();
 
-// Rota para buscar o inventário do usuário por userId
-inventoryRouter.get('/:userId', async (req, res) => {
+inventoryRouter.get('/:userId', authenticateUser, async (req, res) => {
     try {
         const { userId } = req.params;
         const userInventory = await UserInventoryModel.findOne({ userId });
@@ -19,8 +19,8 @@ inventoryRouter.get('/:userId', async (req, res) => {
     }
 });
 
-// Rota para adicionar um item ao inventário do usuário
-inventoryRouter.post('/add', async (req, res) => {
+// adicionar um item ao inventário do usuário
+inventoryRouter.post('/add', authenticateUser, async (req, res) => {
     try {
         const { userId, itemId, resourceName, img_url, quantity } = req.body;
         const userInventory = await UserInventoryModel.findOne({ userId });
@@ -43,8 +43,8 @@ inventoryRouter.post('/add', async (req, res) => {
     }
 });
 
-// Rota para remover um item do inventário do usuário
-inventoryRouter.post('/remove', async (req, res) => {
+// remover um item do inventário do usuário
+inventoryRouter.post('/remove', authenticateUser, async (req, res) => {
     try {
         const { userId, itemId, quantity } = req.body;
         const userInventory = await UserInventoryModel.findOne({ userId });
