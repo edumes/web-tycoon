@@ -1,23 +1,16 @@
 import type { NextPage } from "next";
 import { Card, CardBody, CardFooter, Chip, Image } from "@nextui-org/react";
 import { useEffect, useState } from "react";
+import { setupAPIClient } from "../services/api";
+import { canSSRAuth } from "../utils/canSSRAuth";
 
-const Inventory: NextPage = () => {
-  const [inventory, setInventory] = useState<any[]>([]);
-  const userId = "653e5b167513aa9933ce90db";
-
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  useEffect(() => {
-    fetch(`${apiUrl}/api/inventory/${userId}`)
-      .then((response) => response.json())
-      .then((data) => setInventory(data.items))
-      .catch((error) => console.error("Erro ao buscar inventario:", error));
-  }, []);
+const Inventory: NextPage = (props: any) => {
+  const [inventory, setInventory] = useState<any[]>(props.inventory.items);
 
   return (
     <div className="h-full p-4">
       <div className="flex flex-col gap-2">
-        <h3 className="text-3xl font-semibold mb-4">Ores</h3>
+        <h3 className="text-3xl font-semibold mb-4">Inventory</h3>
         <div className="gap-2 grid grid-cols-2 sm:grid-cols-4">
           {inventory.map((item, index) => (
             <Card shadow="sm" key={index} isPressable onPress={() => console.log("item pressed")}>
@@ -47,3 +40,14 @@ const Inventory: NextPage = () => {
 };
 
 export default Inventory;
+
+export const getServerSideProps = canSSRAuth(async (ctx: any) => {
+  const apiClient = setupAPIClient(ctx);
+  const response = await apiClient.get("/api/inventory/653e5b167513aa9933ce90db");
+
+  return {
+    props: {
+      inventory: response.data,
+    }
+  };
+});

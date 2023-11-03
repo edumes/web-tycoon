@@ -1,74 +1,73 @@
 import type { NextPage } from "next";
 import { Button, Card, CardBody, CardHeader, Image, Input } from "@nextui-org/react";
-import { useEffect, useState } from "react"; // Importe useState e useEffect
+import { useContext, useState } from "react";
+import { AuthContext } from "../components/contexts/AuthContext";
 import { EyeIcon } from "../components/icons/table/eye-icon";
 import { EyeSlashedIcon } from "../components/icons/table/eye-slashed-icon";
+import { PasswordIcon } from "../components/icons/password-icon";
+import { AtIcon } from "../components/icons/at-icon";
+import { toast } from "react-toastify";
+import { canSSRGuest } from "../utils/canSSRGuest";
 
 const Login: NextPage = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { signIn } = useContext(AuthContext);
 
-  const handleLogin = () => {
-    // Aqui você pode fazer uma solicitação para autenticar o usuário no seu backend
-    // Se a autenticação for bem-sucedida, você pode redirecionar o usuário para a página protegida
+  const [loading, setLoading] = useState<boolean>(false);
+  const [userEmail, setUserEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
-    if (email === "user@example.com" && password === "password") {
-      // Simulando uma autenticação bem-sucedida (substitua com sua lógica real)
-      // toasts.show({ text: "Login bem-sucedido!", preset: "success" });
-      // Redirecione o usuário após o login
-      // Router.push("/dashboard"); // Certifique-se de importar Router do Next.js
-    } else {
-      // toasts.show({ text: "Credenciais inválidas. Tente novamente.", preset: "error" });
+  async function handleLogin() {
+    if (userEmail === "" || password === "") {
+      toast.warning("Please fill in all fields!");
+      return;
     }
-  };
 
-  const toggleVisibility = () => setIsVisible(!isVisible);
+    setLoading(true);
+
+    const lowercaseEmail = userEmail.toLowerCase();
+    const lowercasePassword = password.toLowerCase();
+
+    const userData = {
+      email: lowercaseEmail,
+      password: lowercasePassword,
+    }
+
+    await signIn(userData);
+    setLoading(false);
+  }
 
   return (
     <div className="h-screen flex justify-center items-center">
       <div className="p-4 mx-auto w-full sm:w-[500px]">
         <Card>
-          <CardHeader>
-            <Image
-              className="m-20"
-              width={380}
-              isBlurred
-              src={'https://i.imgur.com/sl8yi6n.png'}
-              alt="StarMine Logo"
-            />
-            {/* <h1 className="text-3xl font-semibold">Login</h1> */}
+          <CardHeader className="justify-center">
+            <h4 className="font-bold text-2xl">StarMine</h4>
           </CardHeader>
           <CardBody>
             <Input
               size="lg"
               variant="faded"
-              label="Email"
+              label="User"
               labelPlacement="outside"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mb-2 mt-2"
+              placeholder="Enter your username"
+              startContent={<AtIcon />}
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              className="mb-4 mt-2"
             />
             <Input
               size="lg"
               label="Password"
               labelPlacement="outside"
               placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               variant="faded"
-              // endContent={
-              //   <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
-              //     {isVisible ? (
-              //       <EyeIcon />
-              //     ) : (
-              //       <EyeSlashedIcon />
-              //     )}
-              //   </button>
-              // }
-              type={isVisible ? "text" : "password"}
+              startContent={<PasswordIcon />}
+              type="password"
               className="mb-8"
             />
-            <Button color="warning" variant="bordered" onClick={handleLogin} fullWidth>
+            <Button color="warning" variant="bordered" onClick={handleLogin} fullWidth isLoading={loading}>
               Login
             </Button>
           </CardBody>
@@ -79,3 +78,9 @@ const Login: NextPage = () => {
 };
 
 export default Login;
+
+export const getServerSideProps = canSSRGuest(async (ctx: any) => {
+  return {
+    props: {}
+  }
+});

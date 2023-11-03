@@ -2,17 +2,25 @@ import Link from "next/link"; // Importe o Link do Next.js
 import type { NextPage } from "next";
 import { Button, Chip, Image } from "@nextui-org/react";
 import { useEffect, useState } from "react";
+import { setupAPIClient } from "../services/api";
+import { canSSRAuth } from "../utils/canSSRAuth";
 
-const Planets: NextPage = () => {
-  const [planets, setPlanets] = useState<any>([]);
+type Planet = {
+  _id: string;
+  name: string;
+  img_url: string;
+  resources: {
+    name: string;
+    value: number;
+  }[];
+};
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  useEffect(() => {
-    fetch(`${apiUrl}/api/planets`)
-      .then((response) => response.json())
-      .then((data) => setPlanets(data))
-      .catch((error) => console.error("Erro ao buscar planetas:", error));
-  }, []);
+type PlanetsProps = {
+  planets: Planet[];
+};
+
+const Planets: NextPage = (props: PlanetsProps) => {
+  const [planets, setPlanets] = useState<any>(props.planets);
 
   return (
     <div className="h-full p-4">
@@ -66,3 +74,14 @@ const Planets: NextPage = () => {
 };
 
 export default Planets;
+
+export const getServerSideProps = canSSRAuth(async (ctx: any) => {
+  const apiClient = setupAPIClient(ctx);
+  const response = await apiClient.get("/api/planets");
+
+  return {
+    props: {
+      planets: response.data,
+    }
+  };
+});

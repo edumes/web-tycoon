@@ -8,7 +8,7 @@ const miningRouter = Router();
 miningRouter.post('/:planetId/:resourceId', authenticateUser, async (req, res) => { // minerar
     try {
         const { planetId, resourceId } = req.params;
-        const userId = "653e5b167513aa9933ce90db"; // req.body.id;
+        const userId = req.body.id; // req.body.id;
 
         // informações sobre o planeta e o recurso a ser minerado
         const { resourceName, img_url } = await getPlanetResourceInfo(planetId, resourceId);

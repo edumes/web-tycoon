@@ -34,7 +34,7 @@ userRouter.post('/register', async (req, res) => {
 // Rota para fazer login
 userRouter.post('/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { username, email, password } = req.body;
 
         const user = await UserModel.findOne({ email });
 
@@ -50,7 +50,7 @@ userRouter.post('/login', async (req, res) => {
 
         const token = jwt.sign({ userId: user._id }, 'web-tycoon');
 
-        res.json({ success: true, token });
+        res.json({ success: true, username: user.username, email, token });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Erro ao fazer login.' });
@@ -67,7 +67,7 @@ userRouter.get('/details/:userId', authenticateUser, async (req, res) => {
             return res.status(404).json({ error: 'Usuário não encontrado.' });
         }
 
-        res.json({ success: true, user });
+        res.json({ user });
     } catch (error) {
         res.status(500).json({ error: 'Erro ao buscar informações do usuário.' });
     }

@@ -47,18 +47,18 @@ export const SidebarWrapper = () => {
               isActive={router.pathname === "/planets"}
               href="/planets"
             />
-            <SidebarMenu title="Menu">
+            <SidebarMenu title="menus">
               <SidebarItem
-                isActive={router.pathname === "/accounts"}
+                isActive={router.pathname === "/store"}
                 title="Intergalatic Shop"
                 icon={<AccountsIcon />}
-                href="accounts"
+                href="store"
               />
-              <SidebarItem
+              {/* <SidebarItem
                 isActive={router.pathname === "/payments"}
                 title="Mining"
                 icon={<RocketIcon />}
-              />
+              /> */}
               {/* <CollapseItems
                 icon={<BalanceIcon />}
                 items={["Banks Accounts", "Credit Cards", "Loans"]}
@@ -70,11 +70,11 @@ export const SidebarWrapper = () => {
                 icon={<InventoryIcon />}
                 href="/inventory"
               />
-              <SidebarItem
+              {/* <SidebarItem
                 isActive={router.pathname === "/products"}
                 title="Ores"
                 icon={<ProductsIcon />}
-              />
+              /> */}
             </SidebarMenu>
 
             <SidebarMenu title="Updates">
@@ -91,11 +91,11 @@ export const SidebarWrapper = () => {
                 <SettingsIcon />
               </div>
             </Tooltip>
-            <Tooltip content={"Adjustments"} color="primary">
+            {/* <Tooltip content={"Adjustments"} color="primary">
               <div className="max-w-fit">
                 <FilterIcon />
               </div>
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip content={"Profile"} color="primary">
               <Avatar
                 icon={<AvatarIcon />}
