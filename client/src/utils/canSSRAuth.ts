@@ -1,11 +1,6 @@
+import { GetServerSideProps, GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
 import { parseCookies, destroyCookie } from 'nookies';
 import { AuthTokenError } from '../services/errors/AuthTokenError';
-import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-
-/**
- * @param fn
- * @returns
- */
 
 export function canSSRAuth<P>(fn: GetServerSideProps<P>) {
     return async (ctx: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P>> => {
@@ -19,7 +14,7 @@ export function canSSRAuth<P>(fn: GetServerSideProps<P>) {
                     destination: '/',
                     permanent: false,
                 }
-            };
+            }
         }
 
         try {
@@ -27,14 +22,14 @@ export function canSSRAuth<P>(fn: GetServerSideProps<P>) {
         } catch (err) {
             if (err instanceof AuthTokenError) {
                 destroyCookie(ctx, '@nextauth.token');
+
                 return {
                     redirect: {
                         destination: '/',
                         permanent: false,
                     }
-                };
+                }
             }
-            throw err;
         }
-    };
+    }
 }

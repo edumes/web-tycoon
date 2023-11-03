@@ -3,8 +3,9 @@ import { parseCookies } from 'nookies';
 import { AuthTokenError } from './errors/AuthTokenError';
 import { signOut } from '../components/contexts/AuthContext';
 
-export function setupAPIClient(context = undefined) {
-    const cookies = parseCookies(context);
+export function setupAPIClient(ctx = undefined) {
+    const cookies = parseCookies(ctx);
+    console.log(cookies)
 
     const api = axios.create({
         baseURL: process.env.NEXT_PUBLIC_API_URL,

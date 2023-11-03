@@ -8,10 +8,14 @@ import {
   Navbar,
   NavbarItem,
 } from "@nextui-org/react";
-import React from "react";
+import React, { useContext } from "react";
 import { DarkModeSwitch } from "./darkmodeswitch";
+import { AuthContext, signOut } from "../contexts/AuthContext";
 
 export const UserDropdown = () => {
+  const { user } = useContext(AuthContext);
+  // console.log({ user });
+
   return (
     <Dropdown>
       <NavbarItem>
@@ -27,13 +31,15 @@ export const UserDropdown = () => {
       </NavbarItem>
       <DropdownMenu
         aria-label="User menu actions"
-        onAction={(actionKey) => console.log({ actionKey })}
+        onAction={(actionKey) => {
+          if (actionKey === "logout") signOut();
+        }}
       >
         <DropdownItem
           key="profile"
           className="flex flex-col justify-start w-full items-start"
         >
-          <p>Signed in as StarMiner</p>
+          <p>Signed in as <b>{user.userName}</b></p>
         </DropdownItem>
         <DropdownItem key="settings">My Settings</DropdownItem>
         <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>

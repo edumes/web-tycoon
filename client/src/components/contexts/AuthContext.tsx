@@ -19,12 +19,13 @@ type AuthContextData = {
 
 type UserProps = {
   _id: string;
-  username: string;
+  userName: string;
   email: string;
+  inventoryId: string;
 };
 
 type SignInProps = {
-  email: string;
+  username: string;
   password: string;
 };
 
@@ -51,15 +52,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const { '@nextauth.token': token } = parseCookies();
 
-    if (token && !user) {
+    console.log(token)
+    if (token) {
       api.get(`api/users/details/${user?._id}`)
         .then((response) => {
-          const { _id, username, email } = response.data;
+          const { _id, inventoryId, email } = response.data;
+          const userName = response.data.username;
 
           setUser({
             _id,
-            username,
+            userName,
             email,
+            inventoryId
           });
         })
         .catch(() => {
@@ -68,14 +72,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [user]);
 
-  async function signIn({ email, password }: SignInProps) {
+  async function signIn({ username, password }: SignInProps) {
     try {
       const response = await api.post('api/users/login', {
-        email,
+        username,
         password,
       });
 
-      const { _id, username, token } = response.data;
+      const { _id, email, inventoryId, token } = response.data;
+      const userName = response.data.username;
 
       setCookie(undefined, '@nextauth.token', token, {
         maxAge: 60 * 60 * 24 * 30, // Expira em 1 mês
@@ -84,8 +89,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       setUser({
         _id,
-        username,
         email,
+        userName,
+        inventoryId
       });
 
       api.defaults.headers['Authorization'] = `Bearer ${token}`;
@@ -103,7 +109,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         theme: 'light',
       });
     } catch (error) {
-      toast.error('Usuário ou senha inválidos');
+      toast.error('username or password is invalid');
       console.error('Erro ao acessar sistema', error);
     }
   }

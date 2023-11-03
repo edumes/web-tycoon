@@ -13,7 +13,7 @@ dotenv.config();
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider>
-      <NextThemesProvider defaultTheme="system" attribute="class">
+      <NextThemesProvider defaultTheme="dark" attribute="class">
         <NextUIProvider>
           {/* <Layout> */}
           <Component {...pageProps} />

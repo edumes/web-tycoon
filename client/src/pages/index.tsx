@@ -28,7 +28,7 @@ const Login: NextPage = () => {
     const lowercasePassword = password.toLowerCase();
 
     const userData = {
-      email: lowercaseEmail,
+      username: lowercaseEmail,
       password: lowercasePassword,
     }
 

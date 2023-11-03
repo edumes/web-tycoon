@@ -35,7 +35,7 @@ export const SidebarWrapper = () => {
             isZoomed
             // width={240}
             src={'https://i.imgur.com/sl8yi6n.png'}
-            alt="NextUI Album Cover"
+            alt="Starmine Logo"
           // className="m-1"
           />
         </div>
@@ -47,7 +47,7 @@ export const SidebarWrapper = () => {
               isActive={router.pathname === "/planets"}
               href="/planets"
             />
-            <SidebarMenu title="menus">
+            <SidebarMenu title="Menus">
               <SidebarItem
                 isActive={router.pathname === "/store"}
                 title="Intergalatic Shop"
