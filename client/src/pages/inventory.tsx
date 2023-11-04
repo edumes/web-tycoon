@@ -1,11 +1,22 @@
 import type { NextPage } from "next";
 import { Card, CardBody, CardFooter, Chip, Image } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { setupAPIClient } from "../services/api";
 import { canSSRAuth } from "../utils/canSSRAuth";
+import { AuthContext } from "../components/contexts/AuthContext";
 
-const Inventory: NextPage = (props: any) => {
-  const [inventory, setInventory] = useState<any[]>(props.inventory.items);
+const Inventory: NextPage = () => {
+  const apiClient = setupAPIClient();
+  const user = useContext(AuthContext);
+  const [inventory, setInventory] = useState<any[]>();
+
+  useEffect(() => {
+    apiClient.get(`/api/inventory/${user?.user?.inventoryId}`).then((res) => {
+      setInventory(res.data);
+    }).catch((err) => {
+      console.error("error on loading planets");
+    });
+  }, [inventory])
 
   return (
     <div className="h-full p-4">
@@ -42,12 +53,8 @@ const Inventory: NextPage = (props: any) => {
 export default Inventory;
 
 export const getServerSideProps = canSSRAuth(async (ctx: any) => {
-  const apiClient = setupAPIClient(ctx);
-  const response = await apiClient.get("/api/inventory/653e5b167513aa9933ce90db");
 
   return {
-    props: {
-      inventory: response.data,
-    }
+    props: {}
   };
 });

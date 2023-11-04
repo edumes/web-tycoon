@@ -8,17 +8,17 @@ import { PasswordIcon } from "../components/icons/password-icon";
 import { AtIcon } from "../components/icons/at-icon";
 import { toast } from "react-toastify";
 import { canSSRGuest } from "../utils/canSSRGuest";
-import Link from "next/link";
 
-const Login: NextPage = () => {
-  const { signIn } = useContext(AuthContext);
+const Register: NextPage = () => {
+  const { signUp } = useContext(AuthContext);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [userEmail, setUserEmail] = useState<string>("");
+  const [usernameEmail, setUsernameEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  async function handleLogin() {
-    if (userEmail === "" || password === "") {
+  async function handleRegister() {
+    if (userEmail === "" || password === "" || usernameEmail === "") {
       toast.warning("Please fill in all fields!");
       return;
     }
@@ -26,14 +26,16 @@ const Login: NextPage = () => {
     setLoading(true);
 
     const lowercaseEmail = userEmail.toLowerCase();
+    const lowercaseUsername = usernameEmail.toLowerCase();
     const lowercasePassword = password.toLowerCase();
 
     const userData = {
-      username: lowercaseEmail,
+      email: lowercaseEmail,
+      username: lowercaseUsername,
       password: lowercasePassword,
     }
 
-    await signIn(userData);
+    await signUp(userData);
     setLoading(false);
   }
 
@@ -48,12 +50,23 @@ const Login: NextPage = () => {
             <Input
               size="lg"
               variant="faded"
+              label="E-mail"
+              labelPlacement="outside"
+              placeholder="Enter your email"
+              startContent={<AtIcon />}
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              className="mb-4 mt-2"
+            />
+            <Input
+              size="lg"
+              variant="faded"
               label="User"
               labelPlacement="outside"
               placeholder="Enter your username"
               startContent={<AtIcon />}
-              value={userEmail}
-              onChange={(e) => setUserEmail(e.target.value)}
+              value={usernameEmail}
+              onChange={(e) => setUsernameEmail(e.target.value)}
               className="mb-4 mt-2"
             />
             <Input
@@ -68,20 +81,10 @@ const Login: NextPage = () => {
               type="password"
               className="mb-4"
             />
-            <div className="flex py-2 px-2 justify-between">
-              <Checkbox
-                classNames={{
-                  label: "text-small",
-                }}
-              >
-                Remember me
-              </Checkbox>
-              <Link href="/register">
-                Create Account
-              </Link>
+            <div className="flex py-2 px-2">
             </div>
-            <Button color="warning" variant="bordered" onClick={handleLogin} fullWidth isLoading={loading}>
-              Login
+            <Button color="warning" variant="bordered" onClick={handleRegister} fullWidth isLoading={loading}>
+              Register
             </Button>
           </CardBody>
         </Card>
@@ -90,7 +93,7 @@ const Login: NextPage = () => {
   );
 };
 
-export default Login;
+export default Register;
 
 export const getServerSideProps = canSSRGuest(async (ctx: any) => {
   return {

@@ -14,6 +14,7 @@ type AuthContextData = {
   user: UserProps | undefined;
   isAuthenticated: boolean;
   signIn: (credentials: SignInProps) => Promise<void>;
+  signUp: (credentials: SignUpProps) => Promise<void>;
   signOut: () => void;
 };
 
@@ -28,6 +29,12 @@ type SignInProps = {
   username: string;
   password: string;
 };
+
+type SignUpProps = {
+  username: string;
+  email: string;
+  password: string;
+}
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -53,7 +60,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const { '@nextauth.token': token } = parseCookies();
 
     console.log(token)
-    if (token) {
+    if (token && !user) {
       api.get(`api/users/details/${user?._id}`)
         .then((response) => {
           const { _id, inventoryId, email } = response.data;
@@ -114,8 +121,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  async function signUp({ username, email, password }: SignUpProps){
+    try{
+      const response = await api.post('api/users/register', {
+        username,
+        email,
+        password
+      })
+
+      toast.success("Account created successfully!");
+
+      Router.push('/');
+
+    }catch(err){
+      toast.error("Erro ao cadastrar");
+      console.log('error on register', err)
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, signIn, signUp, signOut }}>
       {isAuthenticated ? (
         <Layout>{children}</Layout>
       ) : (
