@@ -3,8 +3,9 @@ import http from 'http';
 import socketIO, { Server as SocketIOServer } from 'socket.io';
 import { connectToMongo } from './config/mongo';
 import cors from 'cors';
+import dotenv from "dotenv";
 
-import handleErrors from './middleware/errorHandlingMiddleware';
+dotenv.config();
 
 import planetRouter from './routes/planetRouter';
 import inventoryRouter from './routes/inventoryRouter';
@@ -30,9 +31,6 @@ app.use('/api/mine', miningRouter);
 app.use('/api/trade', tradeRouter);
 app.use('/api/upgrades', upgradesRouter);
 app.use('/api/users', userRouter);
-
-// Middleware
-app.use(handleErrors);
 
 app.get('/', (req: Request, res: Response) => {
   res.send({ status: 'on' });

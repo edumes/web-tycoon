@@ -1,11 +1,11 @@
-import { Router } from 'express';
-import authenticateUser from '../middleware/authenticationMiddleware';
+import { Router, Request, Response } from 'express';
+import { isAuthenticated } from '../middleware/isAuthenticated';
 import UserInventoryModel from '../models/UserInventoryModel';
 import PlanetModel from '../models/PlanetModel';
 
 const miningRouter = Router();
 
-miningRouter.post('/:planetId/:resourceId', authenticateUser, async (req, res) => { // minerar
+miningRouter.post('/:planetId/:resourceId', isAuthenticated, async (req: Request, res: Response) => { // minerar
     try {
         const { planetId, resourceId } = req.params;
         const userId = req.body.id; // req.body.id;

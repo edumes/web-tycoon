@@ -1,19 +1,14 @@
-import { Router } from 'express';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import { Router, Request, Response } from 'express';
+import { hash, compare } from 'bcryptjs'
+import { sign } from 'jsonwebtoken';
 import UserModel from '../models/UserModel';
 import UserInventoryModel from '../models/UserInventoryModel';
-import authenticateUser from '../middleware/authenticationMiddleware';
+import { isAuthenticated } from '../middleware/isAuthenticated';
 import mongoose from 'mongoose';
 
 const userRouter = Router();
 
-function generateToken(userId: string) {
-    const token = jwt.sign({ userId }, 'web-tycoon');
-    return token;
-}
-
-userRouter.post('/register', async (req, res) => {
+userRouter.post('/register', async (req: Request, res: Response) => {
     try {
         const { username, email, password } = req.body;
 
@@ -26,7 +21,7 @@ userRouter.post('/register', async (req, res) => {
         const userInventory = new UserInventoryModel({ userId });
         await userInventory.save();
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await hash(password, 8);
         const newUser = new UserModel({
             username,
             email,
@@ -35,16 +30,15 @@ userRouter.post('/register', async (req, res) => {
         });
 
         const savedUser = await newUser.save();
-        const token = generateToken(savedUser._id);
 
-        res.json({ success: true, token });
+        res.json({ success: true, savedUser });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Erro ao criar a conta.' });
     }
 });
 
-userRouter.post('/login', async (req, res) => {
+userRouter.post('/login', async (req: Request, res: Response) => {
     try {
         const { username, password } = req.body;
 
@@ -54,13 +48,23 @@ userRouter.post('/login', async (req, res) => {
             return res.status(400).json({ error: 'Usuário não encontrado.' });
         }
 
-        const passwordMatch = await bcrypt.compare(password, user.password);
+        const passwordMatch = await compare(password, user.password);
 
         if (!passwordMatch) {
             return res.status(401).json({ error: 'Senha incorreta.' });
         }
 
-        const token = jwt.sign({ userId: user._id }, 'web-tycoon');
+        const token = sign(
+            {
+                name: username,
+                email: user.email
+            },
+            process.env.JWT_SECRET,
+            {
+                subject: user._id.toString(),
+                expiresIn: '30d'
+            }
+        )
 
         res.json({ success: true, _id: user._id, email: user.email, username, inventoryId: user.inventoryId, token });
     } catch (error) {
@@ -69,11 +73,11 @@ userRouter.post('/login', async (req, res) => {
     }
 });
 
-userRouter.get('/details/:userId', authenticateUser, async (req, res) => {
+userRouter.get('/details', isAuthenticated, async (req: Request, res: Response) => {
     try {
-        const { userId } = req.params;
+        const user_id = req.user_id;
 
-        const user = await UserModel.findById(userId);
+        const user = await UserModel.findById(user_id);
 
         if (!user) {
             return res.status(404).json({ error: 'Usuário não encontrado.' });

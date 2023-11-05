@@ -8,15 +8,20 @@ import { AuthContext } from "../components/contexts/AuthContext";
 const Inventory: NextPage = () => {
   const apiClient = setupAPIClient();
   const user = useContext(AuthContext);
-  const [inventory, setInventory] = useState<any[]>();
+  const [inventory, setInventory] = useState<any[]>([]);
 
   useEffect(() => {
-    apiClient.get(`/api/inventory/${user?.user?.inventoryId}`).then((res) => {
-      setInventory(res.data);
-    }).catch((err) => {
-      console.error("error on loading planets");
-    });
-  }, [inventory])
+    const fetchData = async () => {
+      try {
+        const response = await apiClient.get(`/api/inventory/${user?.user?._id}`);
+        console.log(response.data.items)
+        setInventory(response.data.items);
+      } catch (err) {
+        console.error("error on loading inventory", err);
+      }
+    };
+    fetchData();
+  }, [inventory]);
 
   return (
     <div className="h-full p-4">
@@ -51,10 +56,3 @@ const Inventory: NextPage = () => {
 };
 
 export default Inventory;
-
-export const getServerSideProps = canSSRAuth(async (ctx: any) => {
-
-  return {
-    props: {}
-  };
-});

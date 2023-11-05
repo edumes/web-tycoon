@@ -1,11 +1,11 @@
-import { Router } from 'express';
-import authenticateUser from '../middleware/authenticationMiddleware';
+import { Router, Request, Response } from 'express';
+import { isAuthenticated } from '../middleware/isAuthenticated';
 import UserInventoryModel from '../models/UserInventoryModel';
 
 const tradeRouter = Router();
 
 // vender minérios
-tradeRouter.post('/sell', authenticateUser, async (req, res) => {
+tradeRouter.post('/sell', isAuthenticated, async (req: Request, res: Response) => {
     try {
         const userId = req.body.id;
         const { itemsToSell } = req.body;

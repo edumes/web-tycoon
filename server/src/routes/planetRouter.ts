@@ -1,11 +1,11 @@
-import { Router } from 'express';
-import authenticateUser from '../middleware/authenticationMiddleware';
+import { Router, Request, Response } from 'express';
+import { isAuthenticated } from '../middleware/isAuthenticated';
 import PlanetModel from '../models/PlanetModel';
 
 const planetRouter = Router();
 
 // listar todos os planetas
-planetRouter.get('/', authenticateUser, async (req, res) => {
+planetRouter.get('/', isAuthenticated, async (req: Request, res: Response) => {
     try {
         const planets = await PlanetModel.find();
         res.json(planets);
@@ -15,7 +15,7 @@ planetRouter.get('/', authenticateUser, async (req, res) => {
 });
 
 // criar novo planeta
-planetRouter.post('/', authenticateUser, async (req, res) => {
+planetRouter.post('/', isAuthenticated, async (req: Request, res: Response) => {
     try {
         const { name, img_url, resources } = req.body;
         const newPlanet = new PlanetModel({ name, img_url, resources });
@@ -28,7 +28,7 @@ planetRouter.post('/', authenticateUser, async (req, res) => {
 });
 
 // detalhes de um planeta por ID
-planetRouter.get('/:planetId', authenticateUser, async (req, res) => {
+planetRouter.get('/:planetId', isAuthenticated, async (req: Request, res: Response) => {
     try {
         const planet = await PlanetModel.findById(req.params.planetId);
         if (!planet) {

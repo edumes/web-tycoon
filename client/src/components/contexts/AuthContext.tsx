@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import { Layout } from '../layout/layout';
 
 type AuthContextData = {
-  user: UserProps | undefined;
+  user: UserProps;
   isAuthenticated: boolean;
   signIn: (credentials: SignInProps) => Promise<void>;
   signUp: (credentials: SignUpProps) => Promise<void>;
@@ -46,25 +46,24 @@ export function signOut() {
   try {
     destroyCookie(undefined, '@nextauth.token');
     Router.push('/');
-    Router.reload();
+    // Router.reload();
   } catch (error) {
     console.error('Erro ao deslogar:', error);
   }
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<UserProps | undefined>();
+  const [user, setUser] = useState<UserProps>();
   const isAuthenticated = !!user;
 
   useEffect(() => {
     const { '@nextauth.token': token } = parseCookies();
 
-    console.log(token)
     if (token && !user) {
-      api.get(`api/users/details/${user?._id}`)
+      api.get(`api/users/details`)
         .then((response) => {
-          const { _id, inventoryId, email } = response.data;
-          const userName = response.data.username;
+          const { _id, inventoryId, email } = response.data.user;
+          const userName = response.data.user.username;
 
           setUser({
             _id,
@@ -103,8 +102,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       api.defaults.headers['Authorization'] = `Bearer ${token}`;
 
-      Router.push('/planets');
-
       toast.success('Logado com sucesso!', {
         position: 'top-right',
         autoClose: 5000,
@@ -115,14 +112,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
         progress: undefined,
         theme: 'light',
       });
+
+      Router.push('/planets');
     } catch (error) {
       toast.error('username or password is invalid');
       console.error('Erro ao acessar sistema', error);
     }
   }
 
-  async function signUp({ username, email, password }: SignUpProps){
-    try{
+  async function signUp({ username, email, password }: SignUpProps) {
+    try {
       const response = await api.post('api/users/register', {
         username,
         email,
@@ -133,7 +132,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       Router.push('/');
 
-    }catch(err){
+    } catch (err) {
       toast.error("Erro ao cadastrar");
       console.log('error on register', err)
     }

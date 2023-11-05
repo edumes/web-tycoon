@@ -7,9 +7,10 @@ import { PickaxeIcon } from "../../components/icons/pickaxe-icon";
 import { canSSRAuth } from "../../utils/canSSRAuth";
 import { setupAPIClient } from "../../services/api";
 
-const PlanetMining: NextPage = ({ planetId }: any) => {
+const PlanetMining: NextPage = () => {
     const apiClient = setupAPIClient();
     const router = useRouter();
+    const { planetId } = router.query;
 
 
     const [planetDetails, setPlanetDetails] = useState<any>([]);
@@ -71,25 +72,25 @@ const PlanetMining: NextPage = ({ planetId }: any) => {
         console.log("progresso", progress);
     }, [progress]);
 
-    // useEffect(() => {
-    //     if (planetId) {
-    //         const fetchPlanetDetails = () => {
-    //             setTimeout(() => {
-    //                 apiClient.get(`api/planets/${planetId}`)
-    //                     .then((res) => {
-    //                         setPlanetDetails(res);
-    //                         setLoading(false);
-    //                     })
-    //                     .catch((error) => {
-    //                         console.error("Erro ao buscar planetas:", error);
-    //                         setLoading(false);
-    //                     });
-    //             }, 1000); // 1 segundo de atraso
-    //         };
+    useEffect(() => {
+        if (planetId) {
+            const fetchPlanetDetails = () => {
+                setTimeout(() => {
+                    apiClient.get(`api/planets/${planetId}`)
+                        .then((res) => {
+                            setPlanetDetails(res.data);
+                            setLoading(false);
+                        })
+                        .catch((error) => {
+                            console.error("Erro ao buscar planetas:", error);
+                            setLoading(false);
+                        });
+                }, 1000); // 1 segundo de atraso
+            };
 
-    //         fetchPlanetDetails();
-    //     }
-    // }, [planetId]);
+            fetchPlanetDetails();
+        }
+    }, [planetId]);
 
     return (
         <div className="h-full p-4">
@@ -98,7 +99,7 @@ const PlanetMining: NextPage = ({ planetId }: any) => {
                     <Skeleton className="w-16 h-6 mb-4 rounded-lg" />
                     <Accordion variant="splitted">
                         {[1, 2, 3].map((resourceIndex) => (
-                            <AccordionItem key={resourceIndex} 
+                            <AccordionItem key={resourceIndex}
                             // indicator={<DotsIcon />}
                             >
                                 <Skeleton className="w-full h-6 rounded-lg" />
@@ -156,16 +157,3 @@ const PlanetMining: NextPage = ({ planetId }: any) => {
 };
 
 export default PlanetMining;
-
-export const getServerSideProps = canSSRAuth(async (ctx: any) => {
-    const apiClient = setupAPIClient(ctx);
-    const { planetId } = ctx.query;
-    const response = await apiClient.get(`/api/planets/${planetId}`);
-
-    return {
-        props: {
-            planetId,
-            planets: response.data,
-        }
-    };
-});

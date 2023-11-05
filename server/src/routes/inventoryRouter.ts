@@ -1,10 +1,10 @@
-import { Router } from 'express';
-import authenticateUser from '../middleware/authenticationMiddleware';
+import { Router, Request, Response } from 'express';
+import { isAuthenticated } from '../middleware/isAuthenticated';
 import UserInventoryModel from '../models/UserInventoryModel';
 
 const inventoryRouter = Router();
 
-inventoryRouter.get('/:userId', authenticateUser, async (req, res) => {
+inventoryRouter.get('/:userId', isAuthenticated, async (req: Request, res: Response) => {
     try {
         const { userId } = req.params;
         const userInventory = await UserInventoryModel.findOne({ userId });
@@ -20,7 +20,7 @@ inventoryRouter.get('/:userId', authenticateUser, async (req, res) => {
 });
 
 // adicionar um item ao inventário do usuário
-inventoryRouter.post('/add', authenticateUser, async (req, res) => {
+inventoryRouter.post('/add', isAuthenticated, async (req: Request, res: Response) => {
     try {
         const { userId, itemId, resourceName, img_url, quantity } = req.body;
         const userInventory = await UserInventoryModel.findOne({ userId });
@@ -44,7 +44,7 @@ inventoryRouter.post('/add', authenticateUser, async (req, res) => {
 });
 
 // remover um item do inventário do usuário
-inventoryRouter.post('/remove', authenticateUser, async (req, res) => {
+inventoryRouter.post('/remove', isAuthenticated, async (req: Request, res: Response) => {
     try {
         const { userId, itemId, quantity } = req.body;
         const userInventory = await UserInventoryModel.findOne({ userId });
