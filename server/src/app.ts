@@ -33,7 +33,7 @@ app.use('/api/upgrades', upgradesRouter);
 app.use('/api/users', userRouter);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send({ status: 'on' });
+  res.send({ status: 'starmine api is on' });
 });
 
 io.on('connection', (socket) => {
