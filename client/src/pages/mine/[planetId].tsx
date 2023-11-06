@@ -51,11 +51,9 @@ const PlanetMining: NextPage = () => {
         };
 
         const finalizeMining = (resourceId: string) => {
-            fetch(`api/mine/${planetId}/${resourceId}`, {
-                method: "POST",
-            })
-                .then((response) => response.json())
-                .then((data) => {
+            apiClient
+                .post(`api/mine/${planetId}/${resourceId}`)
+                .then((response) => {
                     progressRef.current = 0;
                     setProgress(0);
                     setMiningInProgress(false);

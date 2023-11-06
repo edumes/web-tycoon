@@ -8,7 +8,7 @@ const miningRouter = Router();
 miningRouter.post('/:planetId/:resourceId', isAuthenticated, async (req: Request, res: Response) => { // minerar
     try {
         const { planetId, resourceId } = req.params;
-        const userId = req.body.id; // req.body.id;
+        const userId = req.user_id;
 
         // informações sobre o planeta e o recurso a ser minerado
         const { resourceName, img_url } = await getPlanetResourceInfo(planetId, resourceId);
@@ -51,6 +51,7 @@ async function getPlanetResourceInfo(planetId: string, resourceId: string) {
 // atualizar o inventário do jogador com os minérios minerados
 async function updateInventory(userId: string, minedResources: { itemId: string; resourceName: string; quantity: number; img_url: string }[]) {
     const userInventory = await UserInventoryModel.findOne({ userId });
+    console.log({ userId, userInventory });
 
     if (!userInventory) {
         throw new Error('Inventário do jogador não encontrado.');

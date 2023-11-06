@@ -46,7 +46,7 @@ export function signOut() {
   try {
     destroyCookie(undefined, '@nextauth.token');
     Router.push('/');
-    // Router.reload();
+    Router.reload();
   } catch (error) {
     console.error('Erro ao deslogar:', error);
   }
