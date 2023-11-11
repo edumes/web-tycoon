@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { NextPage } from "next";
-import { Button, Chip, Image } from "@nextui-org/react";
+import { Button, Chip, Image, Tooltip } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { setupAPIClient } from "../services/api";
 import { canSSRAuth } from "../utils/canSSRAuth";
@@ -12,6 +12,7 @@ type Planet = {
   resources: {
     name: string;
     value: number;
+    quantity: number;
   }[];
 };
 
@@ -21,6 +22,7 @@ type PlanetsProps = {
 
 const Planets: NextPage<PlanetsProps> = (PlanetsProps) => {
   const [planets, setPlanets] = useState<Planet[]>(PlanetsProps.planets);
+  console.log(planets)
 
   return (
     <div className="h-full p-4">
@@ -41,27 +43,43 @@ const Planets: NextPage<PlanetsProps> = (PlanetsProps) => {
               />
               <h3 className="text-xl font-semibold mt-2">{planet.name}</h3>
               <p className="text-gray-600">
-                Recursos:
                 <ul>
                   {planet.resources.map((resource: any, resourceIndex: any) => (
                     <li key={resourceIndex}>
-                      {resource.name} (<Chip
-                        size="sm"
-                        variant="shadow"
-                        radius="sm"
-                        classNames={{
-                          base: "bg-gradient-to-br from-green-500 to-green-900 border-small border-white/50 shadow-green-500/30",
-                          content: "drop-shadow shadow-black text-white",
-                        }}
-                      >
-                        $ {resource.value}
-                      </Chip> por unidade)
+                      {resource.name} &nbsp;
+                      <Tooltip
+                        showArrow={true}
+                        delay={0}
+                        closeDelay={0}
+                        content={
+                          <div className="px-1 py-2">
+                            <div className="text-small font-bold">
+                              Quantidade disponível:&nbsp;
+                              <Chip size="sm" variant="bordered" radius="lg" color="warning">
+                                {resource.quantity.toLocaleString('pt-BR')}
+                              </Chip>
+                            </div>
+                          </div>
+                        }>
+                        <Chip
+                          size="sm"
+                          variant="shadow"
+                          radius="sm"
+                          classNames={{
+                            base: "bg-gradient-to-br from-green-500 to-green-900 border-small border-white/50 shadow-green-500/30",
+                            content: "drop-shadow shadow-black text-white",
+                          }}
+                        >
+                          $ {resource.value}
+                        </Chip>
+                      </Tooltip>
+                      &nbsp;x1 
                     </li>
                   ))}
                 </ul>
               </p>
               <Link href={`/mine/${planet._id}`}>
-                <Button color="primary" variant="ghost" className="px-4 py-2 mt-4 rounded-md">
+                <Button color="warning" variant="ghost" className="px-4 py-2 mt-4 rounded-md">
                   Minerar
                 </Button>
               </Link>

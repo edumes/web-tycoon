@@ -2,7 +2,9 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 interface IUserInventory extends Document {
     userId: string;
-    items: Array<{ itemId: string; resourceName: string; quantity: number, img_url: string }>;
+    items: Array<{
+        value: number; itemId: string; resourceName: string; quantity: number, img_url: string 
+}>;
 }
 
 const UserInventorySchema: Schema = new Schema({

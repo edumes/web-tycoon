@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 interface IResource extends Document {
     name: string;
     value: number;
+    quantity: number;
     img_url: string;
     planetId: string;
 }
@@ -10,6 +11,7 @@ interface IResource extends Document {
 const ResourceSchema: Schema = new Schema({
     name: { type: String, required: true },
     value: { type: Number, required: true },
+    quantity: { type: Number, required: true },
     img_url: String,
     planetId: { type: mongoose.Schema.Types.ObjectId, ref: 'Planet', required: true },
 });

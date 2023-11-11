@@ -2,24 +2,32 @@ import { Router, Request, Response } from 'express';
 import { isAuthenticated } from '../middleware/isAuthenticated';
 import UserInventoryModel from '../models/UserInventoryModel';
 import PlanetModel from '../models/PlanetModel';
-import mongoose from 'mongoose';
 
 const miningRouter = Router();
 
-miningRouter.post('/:planetId/:resourceId', isAuthenticated, async (req: Request, res: Response) => { // minerar
+miningRouter.post('/:planetId/:resourceId', isAuthenticated, async (req: Request, res: Response) => {
     try {
         const { planetId, resourceId } = req.params;
         const userId = req.user_id;
 
-        // informações sobre o planeta e o recurso a ser minerado
-        const { resourceName, img_url } = await getPlanetResourceInfo(planetId, resourceId);
-        const randomQuantity = Math.floor(Math.random() * 3) + 1 // entre 1 a 3
-        // mineração com base no planeta e no minerio
+        // Obter informações sobre o planeta e o recurso a ser minerado
+        const { resourceName, img_url, resourceValue } = await getPlanetResourceInfo(planetId, resourceId);
+        const randomQuantity = Math.floor(Math.random() * 3) + 1; // Entre 1 e 3
+
+        // Calcular a quantidade minerada e o valor total
+        const minedQuantity = Math.min(randomQuantity, resourceValue);
+
+        // Mineração com base no planeta e no minério
         const minedResources = [
-            { itemId: resourceId, resourceName: resourceName, quantity: randomQuantity, img_url: img_url }
+            { itemId: resourceId, resourceName, quantity: minedQuantity, img_url, value: minedQuantity * resourceValue }
         ];
 
-        await updateInventory(userId, minedResources);
+        // Atualizar o inventário do usuário
+        const userInventory = await getUserInventory(userId);
+        await updateInventory(userInventory.userId, minedResources);
+
+        // Atualizar a quantidade total de minério no planeta após a mineração
+        await updatePlanetResource(planetId, resourceId, minedQuantity);
 
         res.json({ success: true, minedResources });
     } catch (error) {
@@ -28,7 +36,7 @@ miningRouter.post('/:planetId/:resourceId', isAuthenticated, async (req: Request
     }
 });
 
-// obter informações sobre um planeta e seu recurso
+// Obter informações sobre um planeta e seu recurso
 async function getPlanetResourceInfo(planetId: string, resourceId: string) {
     const planet: any = await PlanetModel.findById(planetId);
 
@@ -44,33 +52,71 @@ async function getPlanetResourceInfo(planetId: string, resourceId: string) {
 
     return {
         resourceName: resource.name,
+        img_url: resource.img_url,
         resourceValue: resource.value,
-        img_url: resource.img_url
     };
 }
 
-// atualizar o inventário do jogador com os minérios minerados
-async function updateInventory(userId: string, minedResources: { itemId: string; resourceName: string; quantity: number; img_url: string }[]) {
-    const userInventory = await UserInventoryModel.findOne({ userId: new mongoose.Types.ObjectId(userId) });
-    console.log({ userId, userInventory });
+// Atualizar o inventário do jogador com os minérios minerados
+async function updateInventory(userId: string, minedResources: { itemId: string; resourceName: string; quantity: number; img_url: string; value: number }[]) {
+    const userInventory = await UserInventoryModel.findOne({ userId });
 
     if (!userInventory) {
         throw new Error('Inventário do jogador não encontrado.');
     }
 
-    for (const { itemId, resourceName, quantity, img_url } of minedResources) {
+    for (const { itemId, resourceName, quantity, img_url, value } of minedResources) {
         const existingItem = userInventory.items.find((item) => item.itemId.toString() === itemId);
-        // console.log("existingItem", existingItem)
+
         if (existingItem) {
-            // console.log("1", itemId, quantity)
             existingItem.quantity += quantity;
+            existingItem.value += value;
         } else {
-            // console.log("2", userInventory.items)
-            userInventory.items.push({ itemId, resourceName, quantity, img_url });
+            userInventory.items.push({ itemId, resourceName, quantity, img_url, value });
         }
     }
 
     await userInventory.save();
+}
+
+// Atualizar a quantidade total de minério no planeta após a mineração
+async function updatePlanetResource(planetId: string, resourceId: string, minedQuantity: number) {
+    const planet = await PlanetModel.findById(planetId);
+
+    if (!planet) {
+        throw new Error('Planeta não encontrado.');
+    }
+
+    const resourceIndex = planet.resources.findIndex((res) => res._id.toString() === resourceId);
+
+    if (resourceIndex === -1) {
+        throw new Error('Recurso não encontrado no planeta.');
+    }
+
+    // Diminuir a quantidade do recurso no planeta
+    planet.resources[resourceIndex].value -= minedQuantity;
+
+    await planet.save();
+}
+
+// Obter/atualizar o inventário do jogador
+async function getUserInventory(userId: string) {
+    try {
+        const userInventory = await UserInventoryModel.findOneAndUpdate(
+            { userId },
+            {},
+            { upsert: true, new: true, setDefaultsOnInsert: true }
+        );
+
+        if (!userInventory) {
+            throw new Error('Inventário do jogador não encontrado.');
+        }
+
+        return userInventory;
+    } catch (error) {
+        console.log(error);
+        throw new Error('Erro ao obter/atualizar o inventário do jogador.');
+    }
 }
 
 export default miningRouter;

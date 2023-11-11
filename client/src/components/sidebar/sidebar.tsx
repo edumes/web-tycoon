@@ -52,7 +52,7 @@ export const SidebarWrapper = () => {
                 isActive={router.pathname === "/store"}
                 title="Intergalatic Shop"
                 icon={<AccountsIcon />}
-                href="store"
+                href="/store"
               />
               {/* <SidebarItem
                 isActive={router.pathname === "/payments"}
