@@ -1,4 +1,4 @@
-import Link from "next/link"; // Importe o Link do Next.js
+import Link from "next/link";
 import type { NextPage } from "next";
 import { Button, Chip, Image } from "@nextui-org/react";
 import { useEffect, useState } from "react";
@@ -19,8 +19,8 @@ type PlanetsProps = {
   planets: Planet[];
 };
 
-const Planets: NextPage = (props: PlanetsProps) => {
-  const [planets, setPlanets] = useState<any>(props.planets);
+const Planets: NextPage<PlanetsProps> = (PlanetsProps) => {
+  const [planets, setPlanets] = useState<Planet[]>(PlanetsProps.planets);
 
   return (
     <div className="h-full p-4">

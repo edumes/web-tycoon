@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { PickaxeIcon } from "../../components/icons/pickaxe-icon";
 import { canSSRAuth } from "../../utils/canSSRAuth";
 import { setupAPIClient } from "../../services/api";
+import { toast } from "react-toastify";
 
 const PlanetMining: NextPage = () => {
     const apiClient = setupAPIClient();
@@ -57,6 +58,7 @@ const PlanetMining: NextPage = () => {
                     progressRef.current = 0;
                     setProgress(0);
                     setMiningInProgress(false);
+                    toast.success('Ore mined with success');
                 })
                 .catch((error) => {
                     console.error("Erro ao minerar:", error);

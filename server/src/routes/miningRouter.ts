@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { isAuthenticated } from '../middleware/isAuthenticated';
 import UserInventoryModel from '../models/UserInventoryModel';
 import PlanetModel from '../models/PlanetModel';
+import mongoose from 'mongoose';
 
 const miningRouter = Router();
 
@@ -50,7 +51,7 @@ async function getPlanetResourceInfo(planetId: string, resourceId: string) {
 
 // atualizar o inventário do jogador com os minérios minerados
 async function updateInventory(userId: string, minedResources: { itemId: string; resourceName: string; quantity: number; img_url: string }[]) {
-    const userInventory = await UserInventoryModel.findOne({ userId });
+    const userInventory = await UserInventoryModel.findOne({ userId: new mongoose.Types.ObjectId(userId) });
     console.log({ userId, userInventory });
 
     if (!userInventory) {

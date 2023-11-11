@@ -58,7 +58,7 @@ const Inventory: NextPage = () => {
         ) : (
           <div className="gap-2 grid grid-cols-2 sm:grid-cols-4">
             {inventory.length === 0 ? (
-              <div className="text-center">Inventory is empty</div>
+              <div className="text-center">Your inventory is empty</div>
             ) : (
               inventory.map((item, index) => (
                 <Card shadow="sm" key={index} isPressable onPress={() => console.log("item pressed")}>
