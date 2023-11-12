@@ -43,7 +43,7 @@ const Planets: NextPage<PlanetsProps> = (PlanetsProps) => {
               />
               <h3 className="text-xl font-semibold mt-2">{planet.name}</h3>
               <Divider className="my-2" />
-              <p className="text-gray-600">
+              <div className="text-gray-600">
                 <ul>
                   {planet.resources.map((resource: any, resourceIndex: any) => (
                     <li key={resourceIndex}>
@@ -78,7 +78,7 @@ const Planets: NextPage<PlanetsProps> = (PlanetsProps) => {
                     </li>
                   ))}
                 </ul>
-              </p>
+              </div>
               <Link href={`/mine/${planet._id}`}>
                 <Button color="warning" variant="ghost" className="px-4 py-2 mt-4 rounded-md">
                   Minerar
