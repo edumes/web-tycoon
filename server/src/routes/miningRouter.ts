@@ -94,7 +94,7 @@ async function updatePlanetResource(planetId: string, resourceId: string, minedQ
     }
 
     // Diminuir a quantidade do recurso no planeta
-    planet.resources[resourceIndex].value -= minedQuantity;
+    planet.resources[resourceIndex].quantity -= minedQuantity;
 
     await planet.save();
 }

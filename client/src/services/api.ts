@@ -20,6 +20,7 @@ export function setupAPIClient(ctx = undefined) {
             if (typeof window !== undefined) {
                 signOut();
             } else {
+                console.log("caindo aq")
                 return Promise.reject(new AuthTokenError());
             }
         }

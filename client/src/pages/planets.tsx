@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { NextPage } from "next";
-import { Button, Chip, Image, Tooltip } from "@nextui-org/react";
+import { Button, Chip, Divider, Image, Tooltip } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { setupAPIClient } from "../services/api";
 import { canSSRAuth } from "../utils/canSSRAuth";
@@ -42,6 +42,7 @@ const Planets: NextPage<PlanetsProps> = (PlanetsProps) => {
                 src={planet.img_url}
               />
               <h3 className="text-xl font-semibold mt-2">{planet.name}</h3>
+              <Divider className="my-2" />
               <p className="text-gray-600">
                 <ul>
                   {planet.resources.map((resource: any, resourceIndex: any) => (
@@ -73,7 +74,7 @@ const Planets: NextPage<PlanetsProps> = (PlanetsProps) => {
                           $ {resource.value}
                         </Chip>
                       </Tooltip>
-                      &nbsp;x1 
+                      &nbsp;x1
                     </li>
                   ))}
                 </ul>

@@ -37,7 +37,7 @@ const Inventory: NextPage = () => {
       <div className="flex flex-col gap-2">
         <h3 className="text-3xl font-semibold mb-4">
           <Tabs
-            aria-label="Options"
+            aria-label="Inventory Tabs"
             selectedKey={currentPage}
             onSelectionChange={setCurrentPage}
           >
@@ -49,14 +49,9 @@ const Inventory: NextPage = () => {
             }>
               {loading ? (
                 <div className="gap-2 grid grid-cols-2 sm:grid-cols-4">
-                  <CardSkeleton />
-                  <CardSkeleton />
-                  <CardSkeleton />
-                  <CardSkeleton />
-                  <CardSkeleton />
-                  <CardSkeleton />
-                  <CardSkeleton />
-                  <CardSkeleton />
+                  {Array.from({ length: 8 }).map((_, index) => (
+                    <CardSkeleton />
+                  ))}
                 </div>
               ) : (
                 <div className="gap-2 grid grid-cols-2 sm:grid-cols-4">
