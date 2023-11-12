@@ -50,7 +50,7 @@ const Inventory: NextPage = () => {
               {loading ? (
                 <div className="gap-2 grid grid-cols-2 sm:grid-cols-4">
                   {Array.from({ length: 8 }).map((_, index) => (
-                    <CardSkeleton />
+                    <CardSkeleton key={index} />
                   ))}
                 </div>
               ) : (
