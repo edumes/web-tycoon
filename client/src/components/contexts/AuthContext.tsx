@@ -61,10 +61,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     if (token && !user) {
       api.get(`api/users/details`)
-        .then((response) => {
+        .then(response => {
           const { _id, inventoryId, email } = response.data.user;
           const userName = response.data.user.username;
-
+          // console.log("debug", _id, inventoryId, email, userName);
           setUser({
             _id,
             userName,
@@ -95,8 +95,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       setUser({
         _id,
-        email,
         userName,
+        email,
         inventoryId
       });
 
@@ -113,7 +113,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         theme: 'light',
       });
 
-      Router.push('/planets');
+      Router.push('/inventory');
     } catch (error) {
       toast.error('username or password is invalid');
       console.error('Erro ao acessar sistema', error);
